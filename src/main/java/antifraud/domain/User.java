@@ -29,7 +29,7 @@ public class User implements UserDetails {
     private String username;
     @Column(nullable = false)
     private String password;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
     @Column(nullable = false)

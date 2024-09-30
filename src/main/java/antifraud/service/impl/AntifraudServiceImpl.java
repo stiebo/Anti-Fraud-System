@@ -13,6 +13,7 @@ import antifraud.repository.TransactionLimitRepository;
 import antifraud.repository.TransactionRepository;
 import antifraud.service.AntifraudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,7 +34,9 @@ public class AntifraudServiceImpl implements AntifraudService {
                                 StolenCardRepository stolenCardRepository,
                                 AntifraudMapper mapper,
                                 TransactionLimitRepository transactionLimitRepository,
+                                @Qualifier("defaultMaxAllowed")
                                 Long defaultMaxAllowed,
+                                @Qualifier("defaultMaxManual")
                                 Long defaultMaxManual) {
         this.transactionRepository = transactionRepository;
         this.suspiciousIPRepository = suspiciousIPRepository;
