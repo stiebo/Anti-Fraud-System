@@ -1,4 +1,4 @@
-package anti_fraud_system;
+package antifraud;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
