@@ -53,20 +53,20 @@ public class UserServiceImpl implements UserService {
             user.setRole(roleRepository.findByName("MERCHANT"));
             user.setLocked(true);
         }
-        userRepository.save(user);
-        return mapper.toDto(user);
+        User savedUser = userRepository.save(user);
+        return mapper.toDto(savedUser);
     }
 
     @Override
-    public UserDto[] listUsers() {
+    public List<UserDto> listUsers() {
         List<User> userList = userRepository.findAllByOrderByIdAsc();
         return userList.stream()
                 .map(mapper::toDto)
-                .toArray(UserDto[]::new);
+                .toList();
     }
 
     @Override
-    public void deleteUser(String username) {
+    public void deleteUser(String username) throws UserNotFoundException {
         User user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(UserNotFoundException::new);
         userRepository.delete(user);
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setRole(roleRepository.findByName(changeRoleDto.role()));
         User user1 = userRepository.save(user);
-        return mapper.toDto(user);
+        return mapper.toDto(user1);
     }
 
     @Override
