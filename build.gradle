@@ -33,4 +33,9 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+//	suppress "dynamic loading of agents" warning
+	jvmArgs '-XX:+EnableDynamicAgentLoading'
+	testLogging {
+		events 'PASSED', 'FAILED', 'SKIPPED'
+	}
 }
