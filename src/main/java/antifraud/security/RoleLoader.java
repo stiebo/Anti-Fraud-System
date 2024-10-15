@@ -18,10 +18,15 @@ public class RoleLoader {
     private void createRoles() throws RuntimeException {
         try {
             repository.save(new Role().setName("ADMINISTRATOR"));
+        } catch (Exception e) {
+        }
+        try {
             repository.save(new Role().setName("MERCHANT"));
+        } catch (Exception e) {
+        }
+        try {
             repository.save(new Role().setName("SUPPORT"));
         } catch (Exception e) {
-
         }
     }
 }
