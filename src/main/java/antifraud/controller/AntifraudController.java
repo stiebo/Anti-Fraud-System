@@ -29,7 +29,7 @@ public class AntifraudController {
     }
 
     @PutMapping("/transaction")
-    public TransactionOutDto uploadTransactionFeedback (@Valid @RequestBody UpdateTransactionFeedback feedback) {
+    public TransactionOutDto uploadTransactionFeedback(@Valid @RequestBody UpdateTransactionFeedback feedback) {
         return service.updateTransactionFeedback(feedback);
     }
 
