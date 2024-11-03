@@ -6,7 +6,7 @@ import antifraud.domain.Transaction;
 import antifraud.domain.TransactionLimit;
 import antifraud.dto.*;
 import antifraud.exception.*;
-import antifraud.mapper.AntifraudMapper;
+import antifraud.mapper.AntiFraudMapper;
 import antifraud.repository.StolenCardRepository;
 import antifraud.repository.SuspiciousIpRepository;
 import antifraud.repository.TransactionLimitRepository;
@@ -28,8 +28,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@Import(AntifraudMapper.class)
-class AntifraudServiceImplTest {
+@Import(AntiFraudMapper.class)
+class AntiFraudServiceImplTest {
 
     @Mock
     TransactionRepository transactionRepository;
@@ -45,15 +45,15 @@ class AntifraudServiceImplTest {
 
     TransactionLimit transactionLimit;
 
-    AntifraudServiceImpl antifraudService;
+    AntiFraudServiceImpl antifraudService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         transactionLimit = new TransactionLimit(200L, 1500L); // Example limits
         when(transactionLimitRepository.findById(1L)).thenReturn(Optional.of(transactionLimit));
-        antifraudService = new AntifraudServiceImpl(transactionRepository, suspiciousIpRepository,
-                stolenCardRepository, new AntifraudMapper(), transactionLimitRepository, 200L, 1500L);
+        antifraudService = new AntiFraudServiceImpl(transactionRepository, suspiciousIpRepository,
+                stolenCardRepository, new AntiFraudMapper(), transactionLimitRepository, 200L, 1500L);
     }
 
     private void testPostTransaction(Long amount, Boolean isStolenCard, Boolean isSuspiciousIp,
@@ -92,8 +92,8 @@ class AntifraudServiceImplTest {
 //        override BeforeSetup
         when(transactionLimitRepository.findById(1L)).thenReturn(Optional.empty());
 
-        antifraudService = new AntifraudServiceImpl(transactionRepository, suspiciousIpRepository,
-                stolenCardRepository, new AntifraudMapper(), transactionLimitRepository, 200L, 1500L);
+        antifraudService = new AntiFraudServiceImpl(transactionRepository, suspiciousIpRepository,
+                stolenCardRepository, new AntiFraudMapper(), transactionLimitRepository, 200L, 1500L);
 
         ArgumentCaptor<TransactionLimit> transactionLimitCaptor = ArgumentCaptor.forClass(TransactionLimit.class);
         verify(transactionLimitRepository, times(1)).save(transactionLimitCaptor.capture());

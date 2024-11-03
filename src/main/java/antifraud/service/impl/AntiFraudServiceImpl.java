@@ -6,12 +6,12 @@ import antifraud.domain.Transaction;
 import antifraud.domain.TransactionLimit;
 import antifraud.dto.*;
 import antifraud.exception.*;
-import antifraud.mapper.AntifraudMapper;
+import antifraud.mapper.AntiFraudMapper;
 import antifraud.repository.StolenCardRepository;
 import antifraud.repository.SuspiciousIpRepository;
 import antifraud.repository.TransactionLimitRepository;
 import antifraud.repository.TransactionRepository;
-import antifraud.service.AntifraudService;
+import antifraud.service.AntiFraudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -20,19 +20,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class AntifraudServiceImpl implements AntifraudService {
+public class AntiFraudServiceImpl implements AntiFraudService {
     TransactionRepository transactionRepository;
     SuspiciousIpRepository suspiciousIPRepository;
     StolenCardRepository stolenCardRepository;
-    AntifraudMapper mapper;
+    AntiFraudMapper mapper;
     TransactionLimitRepository transactionLimitRepository;
     TransactionLimit transactionLimit;
 
     @Autowired
-    public AntifraudServiceImpl(TransactionRepository transactionRepository,
+    public AntiFraudServiceImpl(TransactionRepository transactionRepository,
                                 SuspiciousIpRepository suspiciousIPRepository,
                                 StolenCardRepository stolenCardRepository,
-                                AntifraudMapper mapper,
+                                AntiFraudMapper mapper,
                                 TransactionLimitRepository transactionLimitRepository,
                                 @Qualifier("defaultMaxAllowed")
                                 Long defaultMaxAllowed,

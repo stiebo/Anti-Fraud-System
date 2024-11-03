@@ -3,7 +3,7 @@ package antifraud.controller;
 import antifraud.dto.*;
 import antifraud.security.RestAuthenticationEntryPoint;
 import antifraud.security.SecurityConfig;
-import antifraud.service.AntifraudService;
+import antifraud.service.AntiFraudService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +22,15 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AntifraudController.class)
+@WebMvcTest(AntiFraudController.class)
 @Import(SecurityConfig.class)
-class AntifraudControllerTest {
+class AntiFraudControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private AntifraudService antifraudService;
+    private AntiFraudService antifraudService;
 
     @MockBean
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
