@@ -1,7 +1,7 @@
 package antifraud.controller;
 
 import antifraud.dto.*;
-import antifraud.service.AntifraudService;
+import antifraud.service.AntiFraudService;
 import antifraud.validations.CardNumberConstraint;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
@@ -15,11 +15,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/antifraud")
 @Validated
-public class AntifraudController {
-    private final AntifraudService service;
+public class AntiFraudController {
+    private final AntiFraudService service;
 
     @Autowired
-    public AntifraudController(AntifraudService service) {
+    public AntiFraudController(AntiFraudService service) {
         this.service = service;
     }
 

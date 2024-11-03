@@ -2,7 +2,7 @@ package antifraud.service;
 
 import antifraud.dto.*;
 
-public interface AntifraudService {
+public interface AntiFraudService {
     PostTransactionOutDto postTransaction(PostTransactionInDto postTransactionInDto);
 
     TransactionOutDto updateTransactionFeedback(UpdateTransactionFeedback feedback);

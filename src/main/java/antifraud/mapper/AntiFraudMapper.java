@@ -7,7 +7,7 @@ import antifraud.dto.*;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AntifraudMapper {
+public class AntiFraudMapper {
     public Transaction toTransaction(PostTransactionInDto postTransactionInDto) {
         return new Transaction()
                 .setAmount(postTransactionInDto.amount())
