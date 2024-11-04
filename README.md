@@ -16,7 +16,7 @@ Check out my profile: https://hyperskill.org/profile/500961738
 The service includes an H2 file database for all data storage.
 
 ## Tests
-Code tests were performed as part of the Hyperskill project with 150+ tests passed. See https://hyperskill.org/projects/232
+Integration tests were performed as part of the Hyperskill project with 150+ tests passed. See https://hyperskill.org/projects/232
 
 # REST API Documentation
 All documentation retrieved from https://hyperskill.org/projects/232, provided by JetBrains Academy.
