@@ -301,7 +301,7 @@ The system then adjusts its heuristic thresholds based on this feedback, improvi
 
 - **Endpoint**: `DELETE /api/clear-data`
 - **Description**: Deletes all data from the database. Only available for demo purposes and should be used with caution.
-- **Roles Authorized**: Admin
+- **Roles Authorized**: All (Anonymous, Merchant, Administrator, Support)
 - **Responses**:
     - **200 OK**: Returns a JSON message indicating that all data has been deleted.
       ```json
