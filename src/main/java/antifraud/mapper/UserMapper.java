@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
     public UserDto toDto (User user) {
         return new UserDto(user.getId(), user.getName(),
-                user.getUsername(), user.getRole().getName());
+                user.getUsername(), user.getRole().getName(),
+                user.getLocked() ? "LOCKED" : "UNLOCKED");
     }
 }

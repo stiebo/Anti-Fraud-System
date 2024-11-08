@@ -4,6 +4,7 @@ public record UserDto(
         Long id,
         String name,
         String username,
-        String role
+        String role,
+        String status
 ) {
 }

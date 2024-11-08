@@ -51,7 +51,7 @@ class UserControllerTest {
     @BeforeEach
     public void setUp() {
         newUserDto = new NewUserDto("John Doe", "john_doe", "password");
-        userDto = new UserDto(1L, "John Doe", "john_doe", "ADMINISTRATOR");
+        userDto = new UserDto(1L, "John Doe", "john_doe", "ADMINISTRATOR", "LOCKED");
         changeRoleDto = new ChangeRoleDto("john_doe", "SUPPORT");
         changeAccessDto = new ChangeAccessDto("john_doe", "LOCK");
     }
@@ -83,8 +83,8 @@ class UserControllerTest {
     @WithMockUser(roles = "ADMINISTRATOR")
     public void getUsers_ShouldReturnUserList() throws Exception {
         Mockito.when(userService.listUsers()).thenReturn(List.of(
-                new UserDto(1L, "Stief", "stief1", "ADMINISTRATOR"),
-                new UserDto(2L, "Stief", "stief2", "MERCHANT")
+                new UserDto(1L, "Stief", "stief1", "ADMINISTRATOR", "LOCKED"),
+                new UserDto(2L, "Stief", "stief2", "MERCHANT", "UNLOCKED")
         ));
 
         mockMvc.perform(get("/api/auth/list"))
@@ -122,7 +122,8 @@ class UserControllerTest {
     @Test
     @WithMockUser(roles = "ADMINISTRATOR")
     public void changeRole_ShouldReturnUpdatedUser() throws Exception {
-        UserDto updatedUserDto = new UserDto(1L, "John Doe", "john_doe", "SUPPORT");
+        UserDto updatedUserDto = new UserDto(1L, "John Doe", "john_doe", "SUPPORT",
+                "LOCKED");
         Mockito.when(userService.changeRole(any(ChangeRoleDto.class))).thenReturn(updatedUserDto);
 
         mockMvc.perform(put("/api/auth/role")
