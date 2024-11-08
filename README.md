@@ -294,3 +294,19 @@ The system then adjusts its heuristic thresholds based on this feedback, improvi
 - **Responses**:
     - **200 OK**: Card number removed.
     - **404 Not Found**: Card number not found.
+
+## Database Management Endpoint
+
+### Clear All Data (Demo Purposes)
+
+- **Endpoint**: `DELETE /api/clear-data`
+- **Description**: Deletes all data from the database. Only available for demo purposes and should be used with caution.
+- **Roles Authorized**: Admin
+- **Responses**:
+    - **200 OK**: Returns a JSON message indicating that all data has been deleted.
+      ```json
+      {
+        "status": "All data has been deleted from server."
+      }
+      ```
+    - **500 Internal Server Error**: If an error occurs during deletion.
