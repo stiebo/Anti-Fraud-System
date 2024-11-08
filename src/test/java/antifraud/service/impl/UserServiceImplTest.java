@@ -116,6 +116,7 @@ class UserServiceImplTest {
         assertEquals(user.getName(), result.name());
         assertEquals(user.getUsername(), result.username());
         assertEquals(user.getRole().getName(), result.role());
+        assertEquals(user.getLocked(), result.status().equals("LOCKED"));
 
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository, times(1)).save(userArgumentCaptor.capture());
@@ -132,12 +133,12 @@ class UserServiceImplTest {
     void shouldReturnListOfUsers() {
         Role role = new Role().setId(1L).setName("MERCHANT");
         List<User> users = Arrays.asList(
-                new User().setId(1L).setName("John").setUsername("john_doe").setRole(role),
-                new User().setId(2L).setName("Jane").setUsername("jane_doe").setRole(role)
+                new User().setId(1L).setName("John").setUsername("john_doe").setRole(role).setLocked(true),
+                new User().setId(2L).setName("Jane").setUsername("jane_doe").setRole(role).setLocked(false)
         );
 
-        UserDto userDto1 = new UserDto(1L, "John", "john_doe", "MERCHANT");
-        UserDto userDto2 = new UserDto(2L, "Jane", "jane_doe", "MERCHANT");
+        UserDto userDto1 = new UserDto(1L, "John", "john_doe", "MERCHANT", "LOCKED");
+        UserDto userDto2 = new UserDto(2L, "Jane", "jane_doe", "MERCHANT", "UNLOCKED");
 
         when(userRepository.findAllByOrderByIdAsc()).thenReturn(users);
 
@@ -173,11 +174,11 @@ class UserServiceImplTest {
     void shouldChangeUserRole() {
         ChangeRoleDto changeRoleDto = new ChangeRoleDto("john_doe", "SUPPORT");
         User userMerchant = new User().setId(1L).setName("John").setUsername("john_doe")
-                .setRole(new Role().setName("MERCHANT"));
+                .setRole(new Role().setName("MERCHANT")).setLocked(true);
         User userSupport = new User().setId(1L).setName("John").setUsername("john_doe")
-                .setRole(new Role().setName("SUPPORT"));
+                .setRole(new Role().setName("SUPPORT")).setLocked(true);
 
-        UserDto userDto = new UserDto(1L, "John", "john_doe", "SUPPORT");
+        UserDto userDto = new UserDto(1L, "John", "john_doe", "SUPPORT", "LOCKED");
 
         when(userRepository.findByUsernameIgnoreCase("john_doe")).thenReturn(Optional.of(userMerchant));
         when(roleRepository.findByName("SUPPORT")).thenReturn(new Role().setName("SUPPORT"));

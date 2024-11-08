@@ -7,3 +7,4 @@ gradlew.bat
 /gradle/
 /out/
 /antifraudsystemdb.mv.db
+/antifraudsystemdb.trace.db

@@ -1,27 +1,88 @@
 # SpringBoot Rest API Anti-Fraud System (Java)
 
-## Background and Task
-This project demonstrates (in a simplified form) the principles of anti-fraud systems in the financial sector. For this project, we will work on a system with an expanded role model, a set of REST endpoints responsible for interacting with users, and an internal transaction validation logic based on a set of heuristic rules.
+## Background
 
 Frauds carry significant financial costs and risks for all stakeholders. So, the presence of an anti-fraud system is a necessity for any serious e-commerce platform.
 
-Let's implement a simple anti-fraud system consisting of one rule — heuristics. In the beginning, there's one simple measure that prevents fraudsters from illegally transferring money from an account. Suppose some scammers acquired access to confidential financial information through phishing or pharming. They immediately try to transfer as much as possible. Most of the time, the account holder is not aware of the attack. The anti-fraud system should prevent it before it is too late.
+The Anti-Fraud System project provides a comprehensive framework for detecting and preventing fraudulent financial transactions. By integrating role-based access control, RESTful APIs, heuristic validation rules, and adaptive feedback mechanisms, the system offers a robust solution for financial institutions to safeguard against fraud. Leveraging Spring Boot and its associated technologies, the project demonstrates best practices in building secure, scalable, and maintainable applications in the financial sector.
 
-Link to the project: https://hyperskill.org/projects/232
+Link to Github repository: [https://github.com/stiebo/Anti-Fraud-System](https://github.com/stiebo/Anti-Fraud-System)
 
-Check out my profile: https://hyperskill.org/profile/500961738
+Check out my Github profile: [https://github.com/stiebo](https://github.com/stiebo)
+
+Link to the learning project: [https://hyperskill.org/projects/232](https://hyperskill.org/projects/232)
+
+Check out my learning profile: [https://hyperskill.org/profile/500961738](https://hyperskill.org/profile/500961738)
+
+## Key Components of the Anti-Fraud System
+
+1. **Role-Based Access Control**:
+
+    - **User Roles**: The system defines specific roles, including **Administrator**, **Merchant**, and **Support**.
+
+    - **Permissions**:
+
+        - **Administrator**: Manages user roles and access rights.
+
+        - **Merchant**: Submits transactions for validation.
+
+        - **Support**: Reviews and provides feedback on transactions.
+
+    - This structure ensures that users have access only to functionalities pertinent to their roles, enhancing security and operational efficiency.
 
 
-## Data storage
-The service includes an H2 file database for all data storage.
+2. **RESTful API Endpoints**:
+
+    - The system offers a set of REST endpoints for user interactions and transaction management:
+
+        - **User Management**: Endpoints for registering users, assigning roles, and managing access.
+
+        - **Transaction Processing**: Endpoints for submitting transactions and retrieving their statuses.
+
+        - **Feedback Mechanism**: Allows fraud analysts to provide feedback on transaction validations.
+
+    - These endpoints facilitate seamless communication between clients and the server, adhering to REST principles.
+
+
+3. **Transaction Validation with Heuristic Rules**:
+
+    - The system employs heuristic rules to assess transactions:
+
+        - **Amount-Based Validation**: Transactions are categorized as ALLOWED, MANUAL_PROCESSING, or PROHIBITED based on their amounts.
+
+        - **IP and Card Monitoring**: Identifies and blocks transactions from suspicious IP addresses or using stolen card numbers.
+
+        - **Regional Analysis**: Evaluates transactions based on geographic regions to detect anomalies.
+
+    - These rules help in identifying potentially fraudulent activities by analyzing transaction patterns and attributes.
+
+
+4. **Feedback Mechanism**:
+
+    - Support users (Fraud analysts) can provide feedback on transaction validations, indicating whether a transaction was correctly categorized.
+
+    - The system adjusts its heuristic thresholds based on this feedback, improving its accuracy over time.
+
+    - This adaptive approach ensures the system evolves with changing fraud patterns and reduces false positives or negatives.
+
+
+5. **Authentication and Authorization**:
+
+    - Utilizes Spring Security to implement authentication and authorization mechanisms.
+
+    - Ensures that only authenticated users can access the system, with permissions tailored to their roles.
+
+    - This setup protects sensitive operations and data from unauthorized access.
+
+
+6. **Data Persistence**:
+
+    - Employs Spring Data JPA for database interactions, managing user information, transaction records, and feedback data.
+
+    - Ensures data integrity and supports efficient querying and storage operations.
 
 ## Tests
 Integration tests were performed as part of the Hyperskill project with 150+ tests passed. See https://hyperskill.org/projects/232
-
-# REST API Documentation
-All documentation retrieved from https://hyperskill.org/projects/232, provided by JetBrains Academy.
-
-Documentation provides an overview of the endpoints, role model, password requirements, security logging events, and other important information related to our REST API.
 
 ## Users, Roles and Authorization
 
@@ -43,12 +104,8 @@ Our service supports the following roles:
 The service requires Http Basic authentication for all endpoints except for user signup.
 Users can sign up themselves via *POST /api/auth/user*. The Administrator is the user who registered first, all subsequent registrations automatically receive the MERCHANT role and their account is locked by default. Users can be unlocked and roles changed by the Administrator (see below).
 
-## Endpoints
-
-### POST /api/antifraud/transaction
-Allowed role: MERCHANT
-
-Central entry point to the API. The endpoint receives a new transaction and then determines whether the transaction is ALLOWED, PROHIBITED, or requires MANUAL_PROCESSING through a SUPPORT-User
+## Transaction validation
+As the central entry point to the API, transactions can be posted by customers (merchants).
 
 Transactions are checked based on
 1. Transaction amount:
@@ -61,18 +118,7 @@ Transactions are checked based on
 - Transaction is PROHIBITED if there are transactions with the same number within the last hour from more than 2 regions or more than 2 unique IP addresses of the world other than the region or IP address of the transaction that is currently being verified;
 - Transaction is sent for MANUAL_PROCESSING if there are transactions with the same number within the last hour from 2 regions or 2 unique IP addresses of the world other than the region or IP address of the transaction that is currently being verified;
 
-Request Body:
-```json
-{
-  "amount": <Long>,
-  "ip": "<String value, not empty>",
-  "number": "<String value, not empty>",
-  "region": "<String value, not empty>",
-  "date": "yyyy-MM-ddTHH:mm:ss"
-}
-```
-
-Regions (Code, Description):
+Possible regions (Code, Description):
 - EAP	East Asia and Pacific
 - ECA	Europe and Central Asia
 - HIC	High-Income countries
@@ -81,309 +127,170 @@ Regions (Code, Description):
 - SA	South Asia
 - SSA	Sub-Saharan Africa
 
-Response (200 OK):
-```json
-{
-  "result": <[ALLOWED, MANUAL_PROCESSING, PROHIBITED]>,
-  "info": <String>
-}
-```
-In the case of the PROHIBITED or MANUAL_PROCESSING result, the info field contains the reason for rejecting the transaction, options include: amount, card-number, ip, ip-correlation, region-correlation.
+## Threshold adjustment
+Fraud analysts provide feedback on transaction validations, indicating whether a transaction was correctly categorized.
+The system then adjusts its heuristic thresholds based on this feedback, improving its accuracy over time:
 
-### POST /api/auth/user
+| Transaction Validity / Feedback | ALLOWED                 | MANUAL_PROCESSING                  | PROHIBITED                    |
+|---------------------------------|-------------------------|------------------------------------|-------------------------------|
+| ALLOWED                         | exception               | decrease `<allowed-threshold>`     | decrease `<allowed-threshold>` |
+| MANUAL_PROCESSING               | increase `<allowed-threshold>` | exception                        | decrease `<manual-threshold>`  |
+| PROHIBITED                      | increase `<allowed-threshold>` | increase `<manual-threshold>`    | exception                      |
 
-Allowed role: Anonymous
+# Anti-Fraud System API Documentation
 
-Available to any unauthorized user to register to the service. Any new user (except the first one) is automatically locked and received the MERCHANT role.
+## User Management Endpoints
 
-Request Body:
-```json
-{
-   "name": "<String value, not empty>",
-   "username": "<String value, not empty>",
-   "password": "<String value, not empty>"
-}
-```
-
-Response (201 CREATED):
-```json
-{
-   "id": <Long value, not empty>,
-   "name": "<String value, not empty>",
-   "username": "<String value, not empty>",
-  "role": <[MERCHANT,ADMINISTRATOR,SUPPORT]>
-}
-```
-
-### GET /api/auth/list
-
-Allowed role: ADMINISTRATOR, SUPPORT
-
-Return a list of all registered users.
-
-```json
-[
-    {
-        "id": <user1 id>,
-        "name": "<user1 name>",
-        "username": "<user1 username>",
-        "role": "<user1 role>"
-    },
-     ...
-    {
-        "id": <userN id>,
-        "name": "<userN name>",
-        "username": "<userN username>",
-        "role": "<userN role>"
-    }
-]
-```
-
-### DELETE /api/auth/user/{username}
-
-Allowed role: ADMINISTRATOR
-
-{username} specifies the user that should be deleted
-
-Response (200 OK):
-```json
-{
-   "username": "<username>",
-   "status": "Deleted successfully!"
-}
-```
-
-### PUT /api/auth/access 
-
-Allowed role: ADMINISTRATOR
-
-Request:
-```json
-{
-  "username": "<String value, not empty>",
-  "operation": "<[LOCK, UNLOCK]>"  // determines whether the user will be activated or deactivated
-}
-```
-
-Response (200 OK):
-```json
-{
-  "status": "User <username> <[locked, unlocked]>!"
-}
-```
-
-### PUT /api/auth/role 
-
-Allowed role: ADMINISTRATOR
-
-Request:
-```json
-{
-   "username": "<String value, not empty>",
-   "role": "<[MERCHANT, SUPPORT]>"
-}
-```
-
-Response (200 OK):
-```json
-{
-   "username": "<String value, not empty>",
-   "role": "<String value, not empty>"
-}
-```
-
-### POST api/antifraud/suspicious-ip
-
-Allowed role: SUPPORT
-
-Request:
-```json
-{
-   "ip": "<String value, not empty>"
-}
-```
-
-Response (200 OK):
-```json
-{
-   "id": "<Long value, not empty>",
-   "ip": "<String value, not empty>"
-}
-```
-
-### DELETE /api/antifraud/suspicious-ip/{ip}
-
-Allowed role: SUPPORT
-
-Response (200 OK):
-```json
-{
-   "status": "IP <ip address> successfully removed!"
-}
-```
-
-### GET /api/antifraud/suspicious-ip
-
-Allowed role: SUPPORT
-
-Response (200 OK):
-```json
-[
+### Register User
+- **Endpoint**: `POST /api/auth/user`
+- **Description**: Registers a new user in the system.
+- **Roles Authorized**: All (Anonymous, Merchant, Administrator, Support)
+- **Request Body**:
+  ```json
   {
-    "id": 1,
-    "ip": "192.168.1.1"
-  },
-  ...
-  {
-    "id": 100,
-    "ip": "192.168.1.254"
+    "name": "string",
+    "username": "string",
+    "password": "string"
   }
-]
-```
+  ```
+- **Responses**:
+    - **201 Created**: User successfully registered.
+    - **409 Conflict**: Username already exists.
+    - **400 Bad Request**: Invalid input data.
 
-### POST /api/antifraud/stolencard
+### Delete User
+- **Endpoint**: `DELETE /api/auth/user/{username}`
+- **Description**: Deletes an existing user.
+- **Roles Authorized**: Administrator
+- **Path Parameter**:
+    - `username` (string): The username of the user to delete.
+- **Responses**:
+    - **200 OK**: User successfully deleted.
+    - **404 Not Found**: User not found.
 
-Allowed role: SUPPORT
+### List Users
+- **Endpoint**: `GET /api/auth/list`
+- **Description**: Retrieves a list of all registered users.
+- **Roles Authorized**: Administrator, Support
+- **Responses**:
+    - **200 OK**: List of users returned.
 
-Request
-```json
-{
-   "number": "<String value, not empty>"
-}
-```
+---
 
-Response (200 OK):
-```json
-{
-   "id": "<Long value, not empty>",
-   "number": "<String value, not empty>"
-}
-```
+## Transaction Management Endpoints
 
-### DELETE /api/antifraud/stolencard/{number}
+### Process Transaction
+- **Endpoint**: `POST /api/antifraud/transaction`
+- **Description**: Submits a transaction for fraud analysis.
+- **Roles Authorized**: Merchant
+- **Request Body**:
+  ```json
+  {
+    "amount": number,
+    "ip": "string",
+    "number": "string",
+    "region": "string",
+    "date": "string"
+  }
+  ```
+- **Responses**:
+    - **200 OK**: Transaction processed with result.
+    - **400 Bad Request**: Invalid input data.
 
-Allowed role: SUPPORT
+### Provide Transaction Feedback
+- **Endpoint**: `PUT /api/antifraud/transaction`
+- **Description**: Submits feedback on a transaction's validity.
+- **Roles Authorized**: Support
+- **Request Body**:
+  ```json
+  {
+    "transactionId": number,
+    "feedback": "ALLOWED" | "MANUAL_PROCESSING" | "PROHIBITED"
+  }
+  ```
+- **Responses**:
+    - **200 OK**: Feedback submitted.
+    - **404 Not Found**: Transaction not found.
+    - **400 Bad Request**: Invalid feedback.
 
-Response (200 OK):
-```json
-{
-   "status": "Card <number> successfully removed!"
-}
-```
+### Get Transaction History
+- **Endpoint**: `GET /api/antifraud/history`
+- **Description**: Retrieves the history of processed transactions.
+- **Roles Authorized**: Support
+- **Responses**:
+    - **200 OK**: List of transactions returned.
 
-### GET /api/antifraud/stolencard
+### Get Transaction History by Card Number
+- **Endpoint**: `GET /api/antifraud/history/{number}`
+- **Description**: Retrieves transaction history for a specific card number.
+- **Roles Authorized**: Support
+- **Path Parameter**:
+    - `number` (string): The card number.
+- **Responses**:
+    - **200 OK**: List of transactions returned.
+    - **404 Not Found**: No transactions found for the card number.
 
-Allowed role: SUPPORT
+---
 
-Response (200 OK):
-```json
-[
-    {
-        "id": 1,
-        "number": "4000008449433403"
-    },
-     ...
-    {
-        "id": 100,
-        "number": "4000009455296122"
-    }
-]
-```
+## Suspicious IP Management Endpoints
 
-### GET /api/antifraud/history
+### Add Suspicious IP
+- **Endpoint**: `POST /api/antifraud/suspicious-ip`
+- **Description**: Adds an IP address to the suspicious list.
+- **Roles Authorized**: Support
+- **Request Body**:
+  ```json
+  {
+    "ip": "string"
+  }
+  ```
+- **Responses**:
+    - **201 Created**: IP address added.
+    - **409 Conflict**: IP address already exists.
+    - **400 Bad Request**: Invalid IP address.
 
-Allowed user: SUPPORT
+### Delete Suspicious IP
+- **Endpoint**: `DELETE /api/antifraud/suspicious-ip/{ip}`
+- **Description**: Removes an IP address from the suspicious list.
+- **Roles Authorized**: Support
+- **Path Parameter**:
+    - `ip` (string): The IP address to remove.
+- **Responses**:
+    - **200 OK**: IP address removed.
+    - **404 Not Found**: IP address not found.
 
-Response (200 OK):
-```json
-[
-    {
-      "transactionId": <Long>,
-      "amount": <Long>,
-      "ip": "<String value, not empty>",
-      "number": "<String value, not empty>",
-      "region": "<String value, not empty>",
-      "date": "yyyy-MM-ddTHH:mm:ss",
-      "result": "<String>",
-      "feedback": "<String>"
-    },
-     ...
-    {
-      "transactionId": <Long>,
-      "amount": <Long>,
-      "ip": "<String value, not empty>",
-      "number": "<String value, not empty>",
-      "region": "<String value, not empty>",
-      "date": "yyyy-MM-ddTHH:mm:ss",
-      "result": "<String>",
-      "feedback": "<String>"
-    }
-]
-```
+### List Suspicious IPs
+- **Endpoint**: `GET /api/antifraud/suspicious-ip`
+- **Description**: Retrieves the list of suspicious IP addresses.
+- **Roles Authorized**: Support
+- **Responses**:
+    - **200 OK**: List of IP addresses returned.
 
-### GET /api/antifraud/history/{number}
+---
 
-Allowed user: SUPPORT
+## Stolen Card Management Endpoints
 
-Response (200 OK):
-```json
-[
-    {
-      "transactionId": <Long>,
-      "amount": <Long>,
-      "ip": "<String value, not empty>",
-      "number": number,
-      "region": "<String value, not empty>",
-      "date": "yyyy-MM-ddTHH:mm:ss",
-      "result": "<String>",
-      "feedback": "<String>"
-    },
-     ...
-    {
-      "transactionId": <Long>,
-      "amount": <Long>,
-      "ip": "<String value, not empty>",
-      "number": number,
-      "region": "<String value, not empty>",
-      "date": "yyyy-MM-ddTHH:mm:ss",
-      "result": "<String>",
-      "feedback": "<String>"
-    }
-]
-```
+### Add Stolen Card
+- **Endpoint**: `POST /api/antifraud/stolencard`
+- **Description**: Adds a card number to the stolen list.
+- **Roles Authorized**: Support
+- **Request Body**:
+  ```json
+  {
+    "number": "string"
+  }
+  ```
+- **Responses**:
+    - **201 Created**: Card number added.
+    - **409 Conflict**: Card number already exists.
+    - **400 Bad Request**: Invalid card number.
 
-### PUT /api/antifraud/transaction 
-
-Allowed user: SUPPORT
-
-The mechanism for checking transactions (i.e. <allowed-threshold> and <manuel-processing-threshold>) is adjusted based on a feedback system. Feedback will be carried out manually by a SUPPORT specialist for completed transactions. Based on the feedback results (ALLOWED, MANUAL_PROCESSING or PROHIBITED), the limits of fraud detection algorithms will increase or decrease for future transactions and following special rules. Only one feedback is allowed per transaction.
-
-| Transaction validity / Feedback | ALLOWED                        | MANUAL_PROCESSING              | PROHIBITED                     |
-|---------------------------------|--------------------------------|--------------------------------|--------------------------------|
-| ALLOWED                         | exception                      | decrease <allowed-threshold>   | decrease <allowed-threshold>   |
-|                                 |                                |                                | decrease <manual-threshold>    |
-| MANUAL_PROCESSING               | increase <allowed-threshold>   | exception                      | decrease <manual-threshold>    |
-| PROHIBITED                      | increase <allowed-threshold>   |                                |                                |
-|                                 | increase <manual-threshold>    | increase <manual-threshold>    | exception                      |
-
-Request:
-```json
-{
-   "transactionId": <Long>,
-   "feedback": "<ALLOWED, MANUAL_PROCESSING, PROHIBITED>"
-}
-```
-
-Response (200 OK):
-```json
-{
-  "transactionId": <Long>,
-  "amount": <Long>,
-  "ip": "<String value, not empty>",
-  "number": "<String value, not empty>",
-  "region": "<String value, not empty>",
-  "date": "yyyy-MM-ddTHH:mm:ss",
-  "result": "<String>",
-  "feedback": "<String>"
-}
-```
+### Delete Stolen Card
+- **Endpoint**: `DELETE /api/antifraud/stolencard/{number}`
+- **Description**: Removes a card number from the stolen list.
+- **Roles Authorized**: Support
+- **Path Parameter**:
+    - `number` (string): The card number to remove.
+- **Responses**:
+    - **200 OK**: Card number removed.
+    - **404 Not Found**: Card number not found.
