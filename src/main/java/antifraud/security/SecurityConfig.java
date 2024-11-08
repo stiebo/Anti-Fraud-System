@@ -44,6 +44,8 @@ public class SecurityConfig {
                                 // to prevent 401: (endpoints redirecting to the /error/** in case of error and /error/ is secured
                                 // by spring security)
                                 .requestMatchers("/error/**").permitAll()
+                                .requestMatchers("/actuator/**").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","swagger-ui.html").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/auth/user").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/api/auth/user/*")
                                 .hasAuthority("ROLE_ADMINISTRATOR")
