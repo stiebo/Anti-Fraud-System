@@ -1,10 +1,6 @@
 package antifraud.controller;
 
 import antifraud.dto.*;
-import antifraud.exception.RoleAlreadyProvided;
-import antifraud.exception.UnableToLockAdminException;
-import antifraud.exception.UserExistsException;
-import antifraud.exception.UserNotFoundException;
 import antifraud.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
