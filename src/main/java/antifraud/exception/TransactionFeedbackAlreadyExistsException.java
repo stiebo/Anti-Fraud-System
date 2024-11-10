@@ -1,8 +1,7 @@
 package antifraud.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(HttpStatus.CONFLICT)
 public class TransactionFeedbackAlreadyExistsException extends RuntimeException{
+    public TransactionFeedbackAlreadyExistsException() {
+        super("Feedback for transaction already exists");
+    }
 }
