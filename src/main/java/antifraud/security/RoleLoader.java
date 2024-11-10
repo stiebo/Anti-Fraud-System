@@ -15,7 +15,7 @@ public class RoleLoader {
         createRoles();
     }
 
-    private void createRoles() throws RuntimeException {
+    private void createRoles() {
         try {
             repository.save(new Role().setName("ADMINISTRATOR"));
         } catch (Exception e) {
