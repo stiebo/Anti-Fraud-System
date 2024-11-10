@@ -1,5 +1,5 @@
 # Use an openjdk base image
-FROM  --platform=linux/amd64 openjdk:23-slim
+FROM  openjdk:23-slim
 
 # Create a user to run the application as (instead of root)
 # RUN addgroup -S app && adduser -S app -G app
