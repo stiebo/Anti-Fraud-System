@@ -27,8 +27,7 @@ public class UserController {
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto createUser(@Valid @RequestBody NewUserDto newUserDto)
-            throws UserExistsException {
+    public UserDto createUser(@Valid @RequestBody NewUserDto newUserDto) {
         return service.createUser(newUserDto);
     }
 
@@ -38,21 +37,18 @@ public class UserController {
     }
 
     @DeleteMapping("/user/{username}")
-    public DeleteUserDto deleteUser(@PathVariable("username") String username)
-            throws UserNotFoundException {
+    public DeleteUserDto deleteUser(@PathVariable("username") String username) {
         service.deleteUser(username);
         return new DeleteUserDto(username, "Deleted successfully!");
     }
 
     @PutMapping("/role")
-    public UserDto changeRole(@Valid @RequestBody ChangeRoleDto changeRoleDto)
-            throws UserNotFoundException, RoleAlreadyProvided {
+    public UserDto changeRole(@Valid @RequestBody ChangeRoleDto changeRoleDto) {
         return service.changeRole(changeRoleDto);
     }
 
     @PutMapping("/access")
-    public Map<String, String> changeAccess(@Valid @RequestBody ChangeAccessDto changeAccessDto)
-            throws UserNotFoundException, UnableToLockAdminException {
+    public Map<String, String> changeAccess(@Valid @RequestBody ChangeAccessDto changeAccessDto) {
         service.changeAccess(changeAccessDto);
         return Collections.singletonMap("status",
                 String.format("User %s %s!", changeAccessDto.username(),

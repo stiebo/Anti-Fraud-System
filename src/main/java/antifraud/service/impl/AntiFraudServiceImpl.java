@@ -138,10 +138,7 @@ public class AntiFraudServiceImpl implements AntiFraudService {
     }
 
     @Override
-    public TransactionOutDto updateTransactionFeedback(UpdateTransactionFeedback feedback)
-            throws TransactionNotFoundException,
-            TransactionFeedbackAlreadyExistsException,
-            TransactionFeedbackUnprocessableException {
+    public TransactionOutDto updateTransactionFeedback(UpdateTransactionFeedback feedback) {
         Transaction transaction = transactionRepository.findById(feedback.transactionId())
                 .orElseThrow(TransactionNotFoundException::new);
         if (!transaction.getFeedback().isEmpty()) {
@@ -207,8 +204,7 @@ public class AntiFraudServiceImpl implements AntiFraudService {
     }
 
     @Override
-    public TransactionOutDto[] getTransactionHistoryByNumber(String number)
-            throws TransactionNotFoundException {
+    public TransactionOutDto[] getTransactionHistoryByNumber(String number) {
         List<Transaction> transactions = transactionRepository.findAllByNumberOrderByIdAsc(number);
         if (transactions.isEmpty()) {
             throw new TransactionNotFoundException();
@@ -219,8 +215,7 @@ public class AntiFraudServiceImpl implements AntiFraudService {
     }
 
     @Override
-    public SuspiciousIpOutDto postSuspiciousIp(SuspiciousIpInDto suspiciousIpInDto)
-            throws SuspiciousIpExistsException {
+    public SuspiciousIpOutDto postSuspiciousIp(SuspiciousIpInDto suspiciousIpInDto) {
         if (suspiciousIPRepository.existsByIp(suspiciousIpInDto.ip())) {
             throw new SuspiciousIpExistsException();
         }
@@ -228,7 +223,7 @@ public class AntiFraudServiceImpl implements AntiFraudService {
     }
 
     @Override
-    public void deleteSuspiciousIp(String ip) throws SuspiciousIpNotFoundException {
+    public void deleteSuspiciousIp(String ip) {
         SuspiciousIp suspiciousIp = suspiciousIPRepository.findByIp(ip)
                 .orElseThrow(SuspiciousIpNotFoundException::new);
         suspiciousIPRepository.delete(suspiciousIp);
@@ -243,7 +238,7 @@ public class AntiFraudServiceImpl implements AntiFraudService {
     }
 
     @Override
-    public StolenCardOutDto postStolenCard(StolenCardInDto stolenCardInDto) throws StolenCardExistsException {
+    public StolenCardOutDto postStolenCard(StolenCardInDto stolenCardInDto) {
         if (stolenCardRepository.existsByNumber(stolenCardInDto.number())) {
             throw new StolenCardExistsException();
         }
@@ -251,7 +246,7 @@ public class AntiFraudServiceImpl implements AntiFraudService {
     }
 
     @Override
-    public void deleteStolenCard(String number) throws StolenCardNotFoundException {
+    public void deleteStolenCard(String number) {
         StolenCard stolenCard = stolenCardRepository.findByNumber(number)
                 .orElseThrow(StolenCardNotFoundException::new);
         stolenCardRepository.delete(stolenCard);
