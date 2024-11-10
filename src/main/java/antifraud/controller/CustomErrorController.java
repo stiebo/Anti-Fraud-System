@@ -9,6 +9,6 @@ public class CustomErrorController implements ErrorController {
 
     @RequestMapping("/error")
     public String handleError() {
-        return "forward:/error.html";  // Forward directly to the static error.html page
+        return "forward:/error/error.html";  // Forward directly to the static error.html page
     }
 }
