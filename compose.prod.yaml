@@ -1,0 +1,8 @@
+services:
+  app:
+    image: stiebo/antifraudsystem:0.0.1
+    environment:
+      - SERVER_SERVLET_CONTEXT_PATH=/antifraudsystem  # set to nginx path
+    ports:
+      - "28858:28858"
+    #restart: always

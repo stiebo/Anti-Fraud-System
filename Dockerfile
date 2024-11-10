@@ -14,7 +14,5 @@ WORKDIR /app
 # Copy the jar file into the Docker image
 COPY build/libs/*.jar /app/app.jar
 
-EXPOSE 10000
-
 # Run the jar file
 ENTRYPOINT ["java", "-jar", "app.jar"]
