@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
         ), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({RoleAlreadyProvided.class, StolenCardExistsException.class,
+    @ExceptionHandler({RoleAlreadyProvidedException.class, StolenCardExistsException.class,
             SuspiciousIpExistsException.class, TransactionFeedbackAlreadyExistsException.class,
             UserExistsException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
