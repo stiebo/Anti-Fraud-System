@@ -5,35 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Application Error - Transaction Service With Fraud Protection</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
         font-family: Arial, sans-serif;
         background-color: #f8f9fa;
         color: #333;
         display: flex;
         justify-content: center;
-        align-items: center;
-        height: 100vh;
+        align-items: flex-start;
+        min-height: 100vh;
         margin: 0;
-        text-align: left;
+        padding: 20px;
+        overflow-y: auto; /* Allow scrolling */
     }
     .container {
         max-width: 800px;
+        width: 100%;
         padding: 20px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         background-color: #fff;
         border-radius: 8px;
+        margin-top: 20px; /* Ensure top margin */
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
     }
     h1 {
-        font-size: 24px;
+        font-size: 1.5rem;
         color: #dc3545;
     }
     h2 {
-        font-size: 20px;
-        margin-top: 20px;
+        font-size: 1.25rem;
+        margin-top: 16px;
     }
     p, li {
-        font-size: 16px;
+        font-size: 1rem;
         margin: 8px 0;
+        line-height: 1.6;
     }
     a {
         color: #007bff;
@@ -41,6 +53,24 @@
     }
     a:hover {
         text-decoration: underline;
+    }
+    ul {
+        padding-left: 20px;
+    }
+    @media (max-width: 600px) {
+        .container {
+            padding: 16px;
+            margin-top: 10px; /* Reduce top margin on small screens */
+        }
+        h1 {
+            font-size: 1.25rem;
+        }
+        h2 {
+            font-size: 1.1rem;
+        }
+        p, li {
+            font-size: 0.9rem;
+        }
     }
   </style>
 </head>
