@@ -1,13 +1,12 @@
 package antifraud.service.impl;
 
 import antifraud.domain.Role;
-import antifraud.domain.SuspiciousIp;
 import antifraud.domain.User;
 import antifraud.dto.ChangeAccessDto;
 import antifraud.dto.NewUserDto;
 import antifraud.dto.UserDto;
 import antifraud.dto.ChangeRoleDto;
-import antifraud.exception.RoleAlreadyProvided;
+import antifraud.exception.RoleAlreadyProvidedException;
 import antifraud.exception.UnableToLockAdminException;
 import antifraud.exception.UserExistsException;
 import antifraud.exception.UserNotFoundException;
@@ -201,7 +200,7 @@ class UserServiceImplTest {
         when(userRepository.findByUsernameIgnoreCase("john_doe")).thenReturn(Optional.of(user));
 
         assertThatThrownBy(() -> userService.changeRole(changeRoleDto))
-                .isInstanceOf(RoleAlreadyProvided.class);
+                .isInstanceOf(RoleAlreadyProvidedException.class);
 
         verify(userRepository, never()).save(any(User.class));
     }

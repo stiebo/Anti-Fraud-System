@@ -5,14 +5,13 @@ import antifraud.security.SecurityConfig;
 import antifraud.security.RestAuthenticationEntryPoint;
 import antifraud.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import antifraud.exception.RoleAlreadyProvided;
+import antifraud.exception.RoleAlreadyProvidedException;
 import antifraud.exception.UnableToLockAdminException;
 import antifraud.exception.UserExistsException;
 import antifraud.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -138,7 +137,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(roles = "ADMINISTRATOR")
     public void changeRole_ShouldReturnConflictIfRoleAlreadyProvided() throws Exception {
-        Mockito.when(userService.changeRole(any(ChangeRoleDto.class))).thenThrow(new RoleAlreadyProvided());
+        Mockito.when(userService.changeRole(any(ChangeRoleDto.class))).thenThrow(new RoleAlreadyProvidedException());
 
         mockMvc.perform(put("/api/auth/role")
                         .contentType(MediaType.APPLICATION_JSON)

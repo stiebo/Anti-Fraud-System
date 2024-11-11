@@ -5,7 +5,7 @@ import antifraud.dto.ChangeAccessDto;
 import antifraud.dto.ChangeRoleDto;
 import antifraud.dto.NewUserDto;
 import antifraud.dto.UserDto;
-import antifraud.exception.RoleAlreadyProvided;
+import antifraud.exception.RoleAlreadyProvidedException;
 import antifraud.exception.UnableToLockAdminException;
 import antifraud.exception.UserExistsException;
 import antifraud.exception.UserNotFoundException;
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto createUser(NewUserDto newUserDto) throws UserExistsException {
+    public UserDto createUser(NewUserDto newUserDto) {
         if (userRepository.existsByUsernameIgnoreCase(newUserDto.username())) {
             throw new UserExistsException();
         }
@@ -66,19 +66,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String username) throws UserNotFoundException {
+    public void deleteUser(String username) {
         User user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(UserNotFoundException::new);
         userRepository.delete(user);
     }
 
     @Override
-    public UserDto changeRole(ChangeRoleDto changeRoleDto)
-            throws UserNotFoundException, RoleAlreadyProvided {
+    public UserDto changeRole(ChangeRoleDto changeRoleDto) {
         User user = userRepository.findByUsernameIgnoreCase(changeRoleDto.username())
                 .orElseThrow(UserNotFoundException::new);
         if (user.getRole().getName().equals(changeRoleDto.role())) {
-            throw new RoleAlreadyProvided();
+            throw new RoleAlreadyProvidedException();
         }
         user.setRole(roleRepository.findByName(changeRoleDto.role()));
         User user1 = userRepository.save(user);
@@ -86,8 +85,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeAccess(ChangeAccessDto changeAccessDto)
-            throws UserNotFoundException, UnableToLockAdminException {
+    public void changeAccess(ChangeAccessDto changeAccessDto) {
         User user = userRepository.findByUsernameIgnoreCase(changeAccessDto.username())
                 .orElseThrow(UserNotFoundException::new);
         if (user.getRole().getName().equals("ADMINISTRATOR")) {
