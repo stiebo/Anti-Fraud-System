@@ -76,7 +76,12 @@ public class UserRepositoryTest {
 
         List<User> users = userRepository.findAllByOrderByIdAsc();
         assertThat(users.size()).isEqualTo(2);
-        assertEquals(testCorrectUser, users.get(0));
-        assertEquals(testCorrectUser2, users.get(1));
+
+        assertThat(testCorrectUser)
+                .usingRecursiveComparison()
+                .isEqualTo(users.get(0));
+        assertThat(testCorrectUser2)
+                .usingRecursiveComparison()
+                .isEqualTo(users.get(1));
     }
 }
