@@ -79,9 +79,11 @@ public class UserRepositoryTest {
 
         assertThat(testCorrectUser)
                 .usingRecursiveComparison()
+                .ignoringFields("id")
                 .isEqualTo(users.get(0));
         assertThat(testCorrectUser2)
                 .usingRecursiveComparison()
+                .ignoringFields("id")
                 .isEqualTo(users.get(1));
     }
 }

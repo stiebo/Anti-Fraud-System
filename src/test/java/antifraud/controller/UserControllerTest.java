@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.List;
 
@@ -161,4 +162,20 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(changeAccessDto)))
                 .andExpect(status().isBadRequest());
     }
+
+    private void testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(
+            MockHttpServletRequestBuilder requestBuilder) throws Exception {
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "INVALID")
+    public void testAccessAdminEndpointsWithoutAdminRoleReturnsForbidden() throws Exception {
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(get("/api/auth/list"));
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(put("/api/auth/access"));
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(put("/api/auth/role"));
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(delete("/api/auth/user/userabc"));
+    }
+
 }

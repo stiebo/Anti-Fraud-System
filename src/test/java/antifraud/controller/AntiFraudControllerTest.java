@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.time.LocalDateTime;
 
@@ -417,5 +418,28 @@ class AntiFraudControllerTest {
         verify(antifraudService, times(1)).getStolenCards();
     }
 
+    private void testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(
+            MockHttpServletRequestBuilder requestBuilder) throws Exception {
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isForbidden());
+    }
 
+    @Test
+    @WithMockUser(roles = "INVALID")
+    public void testAccessSupportEndpointsWithoutSupportRoleReturnsForbidden() throws Exception {
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(get("/api/antifraud/history"));
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(get("/api/antifraud/history/1234567890"));
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(get("/api/antifraud/stolencard"));
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(post("/api/antifraud/stolencard"));
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(delete("/api/antifraud/stolencard/1234567890"));
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(get("/api/antifraud/suspicious-ip"));
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(post("/api/antifraud/suspicious-ip"));
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(delete("/api/antifraud/suspicious-ip/1234567890"));
+    }
+
+    @Test
+    @WithMockUser(roles = "INVALID")
+    public void testPostTransactionWithoutMerchantRoleReturnsForbidden() throws Exception {
+        testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(post("/api/antifraud/transaction"));
+    }
 }
