@@ -67,31 +67,39 @@ class AntiFraudControllerTest {
     @Test
     @WithMockUser(roles = "MERCHANT")
     public void testPostTransactionWithInvalidDataThrowsValidationException() throws Exception {
-        testPostTransactionInvalidData(new PostTransactionInDto(
-                0L, "192.168.0.1", "4532015112830366", "EAP", LocalDateTime.now()));
-        testPostTransactionInvalidData(new PostTransactionInDto(
-                120L, "192168.0.1", "4532015112830366", "EAP", LocalDateTime.now()));
-        testPostTransactionInvalidData(new PostTransactionInDto(
-                120L, "192.168.0.1", "", "EAP", LocalDateTime.now()));
-        testPostTransactionInvalidData(new PostTransactionInDto(
-                120L, "192.168.0.1", null, "EAP", LocalDateTime.now()));
-        testPostTransactionInvalidData(new PostTransactionInDto(
-                120L, "192.168.0.1", "invalid", "EAP", LocalDateTime.now()));
-        testPostTransactionInvalidData(new PostTransactionInDto(
-                120L, "192.168.0.1", "*()+", "EAP", LocalDateTime.now()));
-        testPostTransactionInvalidData(new PostTransactionInDto(
-                120L, "192.168.0.1", "4532015112830367", "EAP", LocalDateTime.now()));
-        testPostTransactionInvalidData(new PostTransactionInDto(
-                120L, "192.168.0.1", "4532015112830366", "AUT", LocalDateTime.now()));
-        testPostTransactionInvalidData(new PostTransactionInDto(
-                120L, "192.168.0.1", "4532015112830366", "EAP", null));
+        final Long amount = 120L;
+        final Long invalidAmount = 0L;
+        final String ip = "192.168.0.1";
+        final String invalidIp = "192168.0.1";
+        final String validCardNumber = "4532015112830366";
+        final String invalidCardNumber = "invalid";
+        final String specialCharCardNumber = "*()+";
+        final String wrongCardNumber = "4532015112830367";
+        final String region = "EAP";
+        final String invalidRegion = "AUT";
+        final LocalDateTime now = LocalDateTime.now();
+
+        testPostTransactionInvalidData(createInDto(invalidAmount, ip, validCardNumber, region, now));
+        testPostTransactionInvalidData(createInDto(amount, invalidIp, validCardNumber, region, now));
+        testPostTransactionInvalidData(createInDto(amount, ip, "", region, now));
+        testPostTransactionInvalidData(createInDto(amount, ip, null, region, now));
+        testPostTransactionInvalidData(createInDto(amount, ip, invalidCardNumber, region, now));
+        testPostTransactionInvalidData(createInDto(amount, ip, specialCharCardNumber, region, now));
+        testPostTransactionInvalidData(createInDto(amount, ip, wrongCardNumber, region, now));
+        testPostTransactionInvalidData(createInDto(amount, ip, validCardNumber, invalidRegion, now));
+        testPostTransactionInvalidData(createInDto(amount, ip, validCardNumber, region, null));
+    }
+
+    private PostTransactionInDto createInDto(Long amount, String ip, String number, String region, LocalDateTime date) {
+        return new PostTransactionInDto(amount, ip, number, region, date);
     }
 
     @Test
     @WithMockUser(roles = "SUPPORT")
     public void testUploadTransactionFeedbackReturnsTransactionOutDto() throws Exception {
         TransactionOutDto outDto = new TransactionOutDto(1L, 120L, "192.168.0.1",
-                "4532015112830366", "EAP", LocalDateTime.of(2024, 12, 12, 10, 10), "ALLOWED", "ALLOWED");
+                "4532015112830366", "EAP", LocalDateTime.of(2024, 12, 12,
+                10, 10), "ALLOWED", "ALLOWED");
         UpdateTransactionFeedback feedback = new UpdateTransactionFeedback(1L, "ALLOWED");
         when(antifraudService.updateTransactionFeedback(feedback)).thenReturn(outDto);
 
