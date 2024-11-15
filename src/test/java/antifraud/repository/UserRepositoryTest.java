@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static antifraud.TestDataUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import antifraud.domain.Role;
 import antifraud.domain.User;
 import antifraud.security.RoleLoader;
 import org.junit.jupiter.api.BeforeEach;
