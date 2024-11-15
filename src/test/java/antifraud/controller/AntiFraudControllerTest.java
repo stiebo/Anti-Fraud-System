@@ -38,10 +38,6 @@ class AntiFraudControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-//    @BeforeEach
-//    public void setUp() {
-//    }
-
     @Test
     @WithMockUser(roles = "MERCHANT")
     public void testPostTransactionReturnsTransactionOutDto() throws Exception {
