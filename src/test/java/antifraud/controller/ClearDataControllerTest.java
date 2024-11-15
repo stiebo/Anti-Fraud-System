@@ -57,7 +57,7 @@ class ClearDataControllerTest {
                         .delete("/api/clear-data")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"status\":\"All data has been deleted from server.\"}"));
+                .andExpect(content().json("{\"status\":\"Demo server has been reset and all data removed.\"}"));
 
         // Verify each repository's deleteAll method is called once
         verify(stolenCardRepository, times(1)).deleteAll();
