@@ -1,9 +1,10 @@
 package antifraud.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import antifraud.domain.Role;
+import static antifraud.TestDataUtil.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import antifraud.domain.User;
 import antifraud.security.RoleLoader;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,112 +34,54 @@ public class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // Clean up before each test
         userRepository.deleteAll();
     }
 
     @Test
-    void testSaveUser() {
-        User user = new User();
-        user.setUsername("john_doe");
-        user.setPassword("password123");
-        user.setName("John Doe");
-        user.setLocked(false);
-        Role role = roleRepository.findByName("ADMINISTRATOR");
-        user.setRole(role);
-
-        User savedUser = userRepository.save(user);
+    void testSaveCorrectUserSavesUser() {
+        User savedUser = userRepository.save(testCorrectUser);
         assertThat(savedUser.getId()).isNotNull();
     }
 
     @Test
     void testSaveUserWithoutNameThrowsDataIntegrityViolationException() {
-        User user = new User();
-        user.setUsername("john_doe");
-        user.setPassword("password123");
-        // intentionally removed       user.setName("John Doe");
-        user.setLocked(false);
-        Role role = roleRepository.findByName("ADMINISTRATOR");
-        user.setRole(role);
-
-        try {
-            userRepository.save(user);
-        } catch (DataIntegrityViolationException e) {
-            assertThat(e).isInstanceOf(DataIntegrityViolationException.class);
-        }
+        assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(testUserWithoutUsername));
     }
 
     @Test
     void testSaveUserWithInvalidRoleThrowsDataIntegrityViolationException() {
-        User user = new User();
-        user.setUsername("john_doe");
-        user.setPassword("password123");
-        user.setName("John Doe");
-        user.setLocked(false);
-        Role role = new Role().setId(200L).setName("INVALID_ROLE");
-        user.setRole(role);
-
-        try {
-            userRepository.save(user);
-        } catch (DataIntegrityViolationException e) {
-            assertThat(e).isInstanceOf(DataIntegrityViolationException.class);
-        }
+        assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(testUserWithUnknownRole));
     }
 
     @Test
-    void testFindByUsernameIgnoreCase() {
-        User user = new User();
-        user.setUsername("TestUser");
-        user.setPassword("password");
-        user.setName("Test User");
-        user.setLocked(false);
-        Role role = roleRepository.findByName("ADMINISTRATOR");
-        user.setRole(role);
-        userRepository.save(user);
+    void testFindByUsernameIgnoreCaseFindsCorrectUser() {
+        userRepository.save(testCorrectUser);
 
-        Optional<User> foundUser = userRepository.findByUsernameIgnoreCase("testuser");
+        Optional<User> foundUser = userRepository.findByUsernameIgnoreCase(testCorrectUser.getUsername());
         assertTrue(foundUser.isPresent());
-        assertThat(foundUser.get().getUsername()).isEqualToIgnoringCase("TestUser");
+        assertThat(foundUser.get().getUsername()).isEqualToIgnoringCase(testCorrectUser.getUsername());
     }
 
     @Test
-    void testExistsByUsernameIgnoreCase() {
-        User user = new User();
-        user.setUsername("Alice");
-        user.setPassword("secret");
-        user.setName("Alice Wonderland");
-        user.setLocked(false);
-        Role role = roleRepository.findByName("SUPPORT");
-        user.setRole(role);
-        userRepository.save(user);
-
-        boolean exists = userRepository.existsByUsernameIgnoreCase("alice");
+    void testExistsByUsernameIgnoreCaseConfirmsUserExists() {
+        userRepository.save(testCorrectUser);
+        boolean exists = userRepository.existsByUsernameIgnoreCase(testCorrectUser.getUsername());
         assertTrue(exists);
     }
 
     @Test
-    void testFindAllByOrderByIdAsc() {
-        User user1 = new User();
-        user1.setUsername("user1");
-        user1.setPassword("password1");
-        user1.setName("User One");
-        user1.setLocked(false);
-        Role role = roleRepository.findByName("MERCHANT");
-        user1.setRole(role);
-
-        User user2 = new User();
-        user2.setUsername("user2");
-        user2.setPassword("password2");
-        user2.setName("User Two");
-        user2.setLocked(false);
-        user2.setRole(role);
-
-        userRepository.save(user1);
-        userRepository.save(user2);
+    void testFindAllByOrderByIdAscFindsAllUsersInCorrectOrder() {
+        userRepository.save(testCorrectUser);
+        userRepository.save(testCorrectUser2);
 
         List<User> users = userRepository.findAllByOrderByIdAsc();
         assertThat(users.size()).isEqualTo(2);
-        assertThat(users.get(0).getUsername()).isEqualTo("user1");
-        assertThat(users.get(1).getUsername()).isEqualTo("user2");
+
+        assertThat(testCorrectUser)
+                .usingRecursiveComparison()
+                .isEqualTo(users.get(0));
+        assertThat(testCorrectUser2)
+                .usingRecursiveComparison()
+                .isEqualTo(users.get(1));
     }
 }

@@ -42,18 +42,11 @@ class UserControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private NewUserDto newUserDto;
-    private UserDto userDto;
-    private ChangeRoleDto changeRoleDto;
-    private ChangeAccessDto changeAccessDto;
-
-    @BeforeEach
-    public void setUp() {
-        newUserDto = new NewUserDto("John Doe", "john_doe", "password");
-        userDto = new UserDto(1L, "John Doe", "john_doe", "ADMINISTRATOR", "LOCKED");
-        changeRoleDto = new ChangeRoleDto("john_doe", "SUPPORT");
-        changeAccessDto = new ChangeAccessDto("john_doe", "LOCK");
-    }
+    private final NewUserDto newUserDto = new NewUserDto("John Doe", "john_doe", "password");
+    private final UserDto userDto = new UserDto(1L, "John Doe", "john_doe",
+            "ADMINISTRATOR", "LOCKED");
+    private final ChangeRoleDto changeRoleDto = new ChangeRoleDto("john_doe", "SUPPORT");
+    private final ChangeAccessDto changeAccessDto = new ChangeAccessDto("john_doe", "LOCK");
 
     @Test
     public void createUser_ShouldReturnCreatedUser() throws Exception {

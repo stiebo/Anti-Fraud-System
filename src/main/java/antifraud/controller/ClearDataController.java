@@ -38,13 +38,15 @@ public class ClearDataController {
     }
 
     @Operation(
-            summary = "Clear all data",
-            description = "Delete the entire database and reset the API")
+            summary = "Reset demo data",
+            description = "Reset the API and delete all data from the server. This endpoint is meant for demo purposes " +
+                    "to showcase a fresh install.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully deleted all data",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(example = "{\"status\":\"All data has been deleted from server.\"}")
+                            schema = @Schema(example = "{\"status\":\"Demo server has been reset and all data " +
+                                    "removed.\"}")
                     )),
             @ApiResponse(responseCode = "500", description = "Error deleting data",
                     content = @Content(
@@ -64,6 +66,6 @@ public class ClearDataController {
         } catch (Exception e) {
             throw new ClearDataErrorException();
         }
-        return Collections.singletonMap("status", "All data has been deleted from server.");
+        return Collections.singletonMap("status", "Demo server has been reset and all data removed.");
     }
 }

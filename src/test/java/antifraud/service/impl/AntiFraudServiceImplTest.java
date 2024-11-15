@@ -379,7 +379,7 @@ class AntiFraudServiceImplTest {
     }
 
     @Test
-    void testGetTransactionHistoryEmptyArray() {
+    void testGetTransactionHistoryResultsInEmptyArray() {
         // Arrange
         when(transactionRepository.findAllByOrderByIdAsc()).thenReturn(new ArrayList<>());
 
