@@ -29,7 +29,7 @@ public class UserDetailsServiceImplTest {
     }
 
     @Test
-    void loadUserByUsername_UserExists_ReturnsUserDetails() {
+    void testLoadUserByUsernameWhenUserExistsReturnsUserDetails() {
         String username = "testuser";
         User user = new User();
         user.setUsername(username);
@@ -44,7 +44,7 @@ public class UserDetailsServiceImplTest {
     }
 
     @Test
-    void loadUserByUsername_UserDoesNotExist_ThrowsUsernameNotFoundException() {
+    void testLoadUserByUsernameWhenUserDoesNotExistThrowsUsernameNotFoundException() {
         String username = "nonexistentuser";
         when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.empty());
 
