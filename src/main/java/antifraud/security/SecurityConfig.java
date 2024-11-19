@@ -39,13 +39,16 @@ public class SecurityConfig {
                 .exceptionHandling(handling -> handling
                         .authenticationEntryPoint(restAuthenticationEntryPoint) // Handles auth error
                 )
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))           // for Postman, the H2 console
-                .authorizeHttpRequests(requests -> requests                     // manage access
-                                // to prevent 401: (endpoints redirecting to the /error/** in case of error and /error/ is secured
-                                // by spring security)
+                .headers(headers ->
+                        // for Postman, the H2 console
+                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .authorizeHttpRequests(requests -> requests
+                                // to prevent 401: (endpoints redirecting to the /error/** in case of error
+                                // and /error/ is secured by spring security)
                                 .requestMatchers("/error/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
-                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","swagger-ui.html").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","swagger-ui.html",
+                                        "/v3/api-docs.yaml").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/auth/user").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "api/clear-data").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/api/auth/user/*")
