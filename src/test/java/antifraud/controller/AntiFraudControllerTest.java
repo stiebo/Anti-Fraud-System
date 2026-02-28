@@ -1,6 +1,7 @@
 package antifraud.controller;
 
 import antifraud.dto.*;
+import antifraud.exception.TransactionFeedbackUnprocessableException;
 import antifraud.security.RestAuthenticationEntryPoint;
 import antifraud.security.SecurityConfig;
 import antifraud.service.AntiFraudService;
@@ -441,5 +442,18 @@ class AntiFraudControllerTest {
     @WithMockUser(roles = "INVALID")
     public void testPostTransactionWithoutMerchantRoleReturnsForbidden() throws Exception {
         testHelperEndpointAccessWithoutCorrectRoleReturnsForbidden(post("/api/antifraud/transaction"));
+    }
+
+    @Test
+    @WithMockUser(roles = "SUPPORT")
+    public void testUpdateTransactionFeedbackUnprocessableReturnsUnprocessableEntity() throws Exception {
+        UpdateTransactionFeedback feedback = new UpdateTransactionFeedback(1L, "ALLOWED");
+        when(antifraudService.updateTransactionFeedback(any(UpdateTransactionFeedback.class)))
+                .thenThrow(new TransactionFeedbackUnprocessableException());
+
+        mockMvc.perform(put("/api/antifraud/transaction")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(feedback)))
+                .andExpect(status().isUnprocessableEntity());
     }
 }
