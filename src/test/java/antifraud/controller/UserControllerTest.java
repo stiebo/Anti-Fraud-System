@@ -153,6 +153,20 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMINISTRATOR")
+    public void changeAccess_ShouldReturnUnlockedStatus() throws Exception {
+        // use a new DTO with UNLOCK operation
+        ChangeAccessDto unlockDto = new ChangeAccessDto("john_doe", "UNLOCK");
+        Mockito.doNothing().when(userService).changeAccess(any(ChangeAccessDto.class));
+
+        mockMvc.perform(put("/api/auth/access")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(unlockDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("User john_doe unlocked!"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMINISTRATOR")
     public void changeAccess_ShouldReturnBadRequestIfUnableToLockAdmin() throws Exception {
         Mockito.doThrow(new UnableToLockAdminException())
                 .when(userService).changeAccess(any(ChangeAccessDto.class));
